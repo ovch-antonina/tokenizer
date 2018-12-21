@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from gettype import gettype
+
 class Token:
     """
     'Token' class for storing subsubstrings extracted from a string
@@ -28,8 +30,7 @@ class Tokenizer:
         @return tokens List : a list of all the tokens in the input string, the
         positions of their first symbols, and the types of the symbols in them
         '''
-        from gettype import GetType
-        tokens=[]  
+        tokens = []  
         # the first symbol of the current token, is the first symbol of the  
         # input string by default
         first = text[0]
@@ -39,12 +40,14 @@ class Tokenizer:
             # if the type of the current symbol is different from the type of 
             # the first symbol of the current token, then the current token has 
             # ended and the current symbol is the first symbol of the next token
-            if not GetType.gettype(c)==GetType.gettype(first):
-                    tokens.append(Token(text[start:i], start, GetType.gettype(first)))
-                    first = c
-                    start = i
+            cType = gettype(c)
+            firstType = gettype(first) 
+            if start != i and cType != firstType:
+                tokens.append(Token(text[start:i], start, firstType))
+                first = c
+                start = i
         # records the last token in the input string
-        tokens.append(Token(text[start:i+1], start, GetType.gettype(first)))
+        tokens.append(Token(text[start:i+1], start, gettype(first)))
         for token in tokens:
             print(token.substring, token.position, token.symboltype)
         return tokens
