@@ -30,6 +30,9 @@ class Tokenizer:
         @return tokens List : a list of all the tokens in the input string, the
         positions of their first symbols, and the types of the symbols in them
         '''
+        # raises a TypeError if the input string is empty
+        if not text:
+            raise TypeError 
         tokens = []  
         # the first symbol of the current token, is the first symbol of the  
         # input string by default
@@ -48,9 +51,10 @@ class Tokenizer:
                 start = i
         # records the last token in the input string
         tokens.append(Token(text[start:i+1], start, gettype(first)))
-        for token in tokens:
-            print(token.substring, token.position, token.symboltype)
+        #for token in tokens:
+            #print(token.substring, token.position, token.symboltype)
         return tokens
 
-#text = '5^3'
+#text = '123'
 #Tokenizer.tokenize(text)
+

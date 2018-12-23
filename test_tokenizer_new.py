@@ -27,6 +27,13 @@ class TokenizerTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             Tokenizer.tokenize(123)      
             
+    def test_emptyString(self):
+        '''
+        tests how the tokenizer handles receiving an empty string
+        '''
+        with self.assertRaises(TypeError):
+            Tokenizer.tokenize('')
+
     def test_onesymbol(self):
         '''
         tests a string that has only one symbol

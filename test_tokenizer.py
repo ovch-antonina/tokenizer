@@ -23,7 +23,7 @@ class TokenizerTest(unittest.TestCase):
         '''
         with self.assertRaises(TypeError):
             Tokenizer.tokenize(123)
-
+            
     def test_whitespaces(self):
         '''
         tests a string that starts and ends with a whitespace and has multiple
