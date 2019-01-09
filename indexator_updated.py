@@ -41,12 +41,10 @@ def index_shelve(text, output):
             right = token.position + len(token.substring)
             # records the position of the current token
             pos = Position(token.position, right)
-            val = {}
             # if the current token's substring is not an existing key, creates 
             # one and assigns its position as the value
             if token.substring not in shelf:
-                val[text] = [pos]
-                shelf[token.substring] = val
+                shelf[token.substring] = {text: [pos]}
             # if the current token's substring is an existing key 
             else:
                 # reads the value of that existing key
@@ -55,7 +53,7 @@ def index_shelve(text, output):
                 # as a key, creates a new dictionary entry and updates the 
                 # value of the existing indexer key with it
                 if text not in val_new:
-                    val_new.update({text:[pos]})
+                    val_new[text] = [pos]
                     shelf[token.substring] = val_new
                 # if the values dictionary has the current file path as a key,
                 # updates the list of positions in that values dictionary 
@@ -65,16 +63,16 @@ def index_shelve(text, output):
                     shelf[token.substring] = val_new                        
     return shelf
 
-#text1 = "input1.txt"
+text1 = "input1.txt"
 #text2 = "input2.txt"
-#output = "output_shelf.db"
-#shelf = index_shelve(text1, output)
+output = "output_shelf.db"
+shelf = index_shelve(text1, output)
 #shelf = index_shelve(text2, output)
-#for key in shelf.keys():
-#    print('key:', key)
-#    dic = shelf[key]
-#    for key2 in dic.keys():
-#        print('text:', key2)
-#        for thing in dic[key2]:
-#            print('pos:', thing)
-#shelf.close()
+for key in shelf.keys():
+    print('key:', key)
+    dic = shelf[key]
+    for key2 in dic.keys():
+        print('text:', key2)
+        for thing in dic[key2]:
+            print('pos:', thing)
+shelf.close()
