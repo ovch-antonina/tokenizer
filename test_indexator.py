@@ -1,18 +1,41 @@
 import unittest
-from indexator import index_shelve
+from indexator_updated import Position, index_shelve
 
 class IndexatorTest(unittest.TestCase):
     '''tests for indexator.py'''
 
     def test_regular(self):
         '''
-        tests a string with mixed alphabetical symbols, numbers, whitespaces, 
-        and punctuation
+        tests an input file with several tokens, no repeating tokens
         '''
-        shelf = index_shelve('one two three 1 2 3 !!!')
-        self.assertEqual(len(list(shelf.keys())), 6)
-        self.assertEqual(shelf['0'].symboltype, 'letter')
-        self.assertEqual(shelf['5'].symboltype, 'digit')
+        shelf = index_shelve("input1.txt", "output_shelf.db")
+        keys_list = []
+        text_list = []
+        for key in shelf.keys():
+            keys_list.append(key)
+            dic = shelf[key]
+            for key2 in dic.keys():
+                text_list.append(key2)
+        self.assertEqual(len(keys_list), 6)
+        self.assertEqual(keys_list[0], 'one')
+        self.assertEqual(text_list[1], 'input1.txt')
+        
+    def test_two_files(self):
+        '''
+        tests two input files with several tokens, some repeating
+        '''
+        shelf = index_shelve("input1.txt", "output_shelf_2.db")
+        shelf = index_shelve("input2.txt", "output_shelf_2.db")
+        keys_list = []
+        text_list = []
+        for key in shelf.keys():
+            keys_list.append(key)
+            dic = shelf[key]
+            for key2 in dic.keys():
+                text_list.append(key2)
+        self.assertEqual(len(keys_list), 6)
+        self.assertEqual(keys_list[0], 'one')
+        self.assertEqual(text_list[1], 'input2.txt')
         
     def test_typeError(self):
         '''
