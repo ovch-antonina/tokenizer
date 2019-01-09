@@ -8,37 +8,39 @@ class Position:
     def __repr__(self):
         return 'Position(%s:%s)' % (self.left, self.right)
 
-def index_shelve(texts, output):
+def index_shelve(text, output):
     shelf = shelve.open(output)
-    for text in texts:
-        tokens = Tokenizer.tokenize(text)
-        for token in tokens:
-            if token.symboltype is 'letter' or token.symboltype is 'digit':
-                #print(token.substring)
-                positions = []
-                positions.append(Position(token.position, len(token.substring)))
-                val = {}
-                if token.substring not in shelf:
-                    val[text] = positions
-                    shelf[token.substring] = val
+    with open(text, 'r', encoding='utf-8') as text_temp:
+        data = text_temp.read()
+    tokens = Tokenizer.tokenize(data)
+    for token in tokens:
+        if token.symboltype is 'letter' or token.symboltype is 'digit':
+            right = token.position + len(token.substring)
+            pos = Position(token.position, right)
+            val = {}
+            if token.substring not in shelf:
+                val[text] = [pos]
+                shelf[token.substring] = val
+            else:
+                val_new = shelf[token.substring]
+                if text not in val_new:
+                    val_new.update({text:[pos]})
+                    shelf[token.substring] = val_new
                 else:
-                    val_new = shelf[token.substring]
-                    if text not in val_new:
-                        val_new.update({text:positions})
-                        shelf[token.substring] = val_new
-                    else:
-                        val_new[text].append(positions)
-                        shelf[token.substring] = val_new                        
+                    val_new[text].append(pos)
+                    shelf[token.substring] = val_new                        
     return shelf
 
-texts = ['one two three 1 2 3','one one one 1 two']
-output = "output_shelf.db"
-shelf = index_shelve(texts, output)
-for key in shelf.keys():
-    print('key:', key)
-    dic = shelf[key]
-    for key2 in dic.keys():
-        print('text', key2)
-        for thing in dic[key2]:
-            print('pos:', thing)
-shelf.close()
+#text1 = "input1.txt"
+#text2 = "input2.txt"
+#output = "output_shelf.db"
+#shelf = index_shelve(text1, output)
+#shelf = index_shelve(text2, output)
+#for key in shelf.keys():
+#    print('key:', key)
+#    dic = shelf[key]
+#    for key2 in dic.keys():
+#        print('text:', key2)
+#        for thing in dic[key2]:
+#            print('pos:', thing)
+#shelf.close()
