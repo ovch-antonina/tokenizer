@@ -8,15 +8,8 @@ class Position:
     def __repr__(self):
         return 'Position(%s:%s)' % (self.left, self.right)
 
-def index_shelve(texts):
-    '''
-    Saves tokens of 'letter' or 'digit' type into an indexed database
-    @param text String : input string
-    @return shelf Class 'shelve.DbfilenameShelf' : indexed database
-    '''
-    # creates the database file
-    shelf = shelve.open("output_shelf.db")
-    val = {}
+def index_shelve(texts, output):
+    shelf = shelve.open(output)
     for text in texts:
         tokens = Tokenizer.tokenize(text)
         for token in tokens:
@@ -24,25 +17,28 @@ def index_shelve(texts):
                 #print(token.substring)
                 positions = []
                 positions.append(Position(token.position, len(token.substring)))
+                val = {}
                 if token.substring not in shelf:
                     val[text] = positions
                     shelf[token.substring] = val
                 else:
-                    val = shelf[token.substring]
-                    if text not in val:
-                        val.update({text:positions})
-                        shelf[token.substring] = val
+                    val_new = shelf[token.substring]
+                    if text not in val_new:
+                        val_new.update({text:positions})
+                        shelf[token.substring] = val_new
                     else:
-                        val[text].append(positions)
-                        shelf[token.substring] = val                        
+                        val_new[text].append(positions)
+                        shelf[token.substring] = val_new                        
     return shelf
 
 texts = ['one two three 1 2 3','one one one 1 two']
-shelf = index_shelve(texts)
-#for key in shelf.keys():
-#    print('key:', key)
-#    dic = shelf[key]
-#    for key2 in dic.keys():
-#        print('text', key2)
-#        for thing in dic[key2]:
-#            print('pos:', thing)
+output = "output_shelf.db"
+shelf = index_shelve(texts, output)
+for key in shelf.keys():
+    print('key:', key)
+    dic = shelf[key]
+    for key2 in dic.keys():
+        print('text', key2)
+        for thing in dic[key2]:
+            print('pos:', thing)
+shelf.close()
