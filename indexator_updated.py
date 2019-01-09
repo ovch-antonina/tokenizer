@@ -30,7 +30,7 @@ def index_shelve(text, output):
     @return shelf Class 'shelve.DbfilenameShelf' : indexed database
     '''
     # opens the indexed database, creates a new one if it doesn't exist yet
-    shelf = shelve.open(output)
+    shelf = shelve.open(output, writeback=True)
     # reads the input file 
     with open(text, 'r', encoding='utf-8') as text_temp:
         data = text_temp.read()
@@ -54,20 +54,18 @@ def index_shelve(text, output):
                 # value of the existing indexer key with it
                 if text not in val_new:
                     val_new[text] = [pos]
-                    shelf[token.substring] = val_new
                 # if the values dictionary has the current file path as a key,
                 # updates the list of positions in that values dictionary 
                 # entry
                 else:
                     val_new[text].append(pos)
-                    shelf[token.substring] = val_new                        
     return shelf
 
 text1 = "input1.txt"
-#text2 = "input2.txt"
+text2 = "input2.txt"
 output = "output_shelf.db"
 shelf = index_shelve(text1, output)
-#shelf = index_shelve(text2, output)
+shelf = index_shelve(text2, output)
 for key in shelf.keys():
     print('key:', key)
     dic = shelf[key]
